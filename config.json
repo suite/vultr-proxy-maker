@@ -1,0 +1,9 @@
+
+{
+    "_comment": "WARNING: username and proxy can only be set once. To change you must delete all startup scripts.",
+    "proxy": {
+        "username": "matt",
+        "password": "proxy"
+    },
+    "apikey": "5LRI7BCVUSS64LBGQJTWWVR4Y4SBUIE2V2RQ"
+}
