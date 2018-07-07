@@ -156,65 +156,68 @@ function getOS() {
 function createSever() {
 
     for(var i =0 ; i < proxiesnum; i++) {
-        console.log('creating proxy... (fingers crossed)')
+        setTimeout(() => {
+            console.log('creating proxy... (fingers crossed)')
     
-        var sid;
-        request({
-            url: 'https://api.vultr.com/v1/startupscript/list',
-            headers: {
-                'API-Key': apikey
-            }, 
-            json:true
-        }, function(err, resp, body) {
-            Object.keys(body).forEach( function (key) { 
-                if(body[key].name == 'proxyscript') {
-                    sid = body[key].SCRIPTID
-                }
-            })
-            let data = {
-                DCID: locationnum,
-                VPSPLANID: vpsplannum,
-                OSID: osnum,
-                SCRIPTID: sid
-                // userdata: Buffer.from(userdata).toString('base64')
-                    
-            }
-        
-            // console.log(data)
-        
-        
-            
-            var subid
+            var sid;
             request({
-                url: 'https://api.vultr.com/v1/server/create',
+                url: 'https://api.vultr.com/v1/startupscript/list',
                 headers: {
                     'API-Key': apikey
-                },
-                method: 'POST',
-                formData: data,
-                json: true
+                }, 
+                json:true
             }, function(err, resp, body) {
-                // console.log(body)
-                subid = body.SUBID
-                console.log('Server is being made, wait 120s...')
-    
-                setTimeout(() => {
-                    request({
-                        url: 'https://api.vultr.com/v1/server/list',
-                        headers: {
-                            'API-Key': apikey
-                        },
-                        json: true
-                    }, function(err, resp, body) {
-                           
-                        console.log(body[subid].main_ip + `:3128:${config.proxy.username}:${config.proxy.password}`)
+                Object.keys(body).forEach( function (key) { 
+                    if(body[key].name == 'proxyscript') {
+                        sid = body[key].SCRIPTID
+                    }
+                })
+                let data = {
+                    DCID: locationnum,
+                    VPSPLANID: vpsplannum,
+                    OSID: osnum,
+                    SCRIPTID: sid
+                    // userdata: Buffer.from(userdata).toString('base64')
                         
-                    })
-                    
-                }, 1000*120)
-                // return final(body.SUBID)
+                }
+            
+                // console.log(data)
+            
+            
+                
+                var subid
+                request({
+                    url: 'https://api.vultr.com/v1/server/create',
+                    headers: {
+                        'API-Key': apikey
+                    },
+                    method: 'POST',
+                    formData: data,
+                    json: true
+                }, function(err, resp, body) {
+                    // console.log(body)
+                    subid = body.SUBID
+                    console.log('Server is being made, wait 120s...')
+        
+                    setTimeout(() => {
+                        request({
+                            url: 'https://api.vultr.com/v1/server/list',
+                            headers: {
+                                'API-Key': apikey
+                            },
+                            json: true
+                        }, function(err, resp, body) {
+                               
+                            console.log(body[subid].main_ip + `:3128:${config.proxy.username}:${config.proxy.password}`)
+                            
+                        })
+                        
+                    }, 1000*120)
+                    // return final(body.SUBID)
+                })
             })
-        })
+        }, i*1200)
+        
     }
 
     
